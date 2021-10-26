@@ -1,7 +1,15 @@
 #!/usr/bin/python
 
+# Built-ins
 from threading import Thread
 import socket
+import sys
+
+#Owned
+import config as cfg
+__author__ = 'Walker Davis'
+__version__ = '0.0.2'
+
 
 class ClientToProxy(Thread):
     def __init__(self, host, port):
@@ -62,8 +70,17 @@ class Proxy(Thread):
             self.p2s.start()
 
 def main():
-    proxy_server = Proxy('0.0.0.0', 'serverrr', 8080)
-    proxy_server.start()
+    if len(sys.argv) == 4:
+        proxy_server = Proxy(sys.argv[1], sys.argv[2], int(sys.argv[3]))
+        proxy_server.start()
+    else:
+        print('Incorrect number of arguments provided.')
+        print('Using default values from config.py')
+        print('\tServer IP: {}'.format(cfg.default['server_ip']))
+        print('\tClient IP: {}'.format(cfg.default['client_ip']))
+        print('\tPort:      {}'.format(cfg.default['port']))
+        proxy_server = Proxy(cfg.default['server_ip'], cfg.default['client_ip'], cfg.default['port'])
+        proxy_server.start()
     
 if __name__ == '__main__':
     main()
